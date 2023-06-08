@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.ujobs.WebServices.exception.ValidationException;
 import com.ujobs.WebServices.model.Student;
+import com.ujobs.WebServices.requests.AuthenticationRequest;
+import com.ujobs.WebServices.requests.StudentRegistrationRequest;
 import com.ujobs.WebServices.response.AuthenticationResponse;
 import com.ujobs.WebServices.service.AuthentificationService;
 import com.ujobs.WebServices.service.StudentService;
