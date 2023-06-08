@@ -3,6 +3,7 @@ package com.ujobs.WebServices.service;
 import java.io.IOException;
 
 import com.ujobs.WebServices.model.Student;
+import com.ujobs.WebServices.requests.AuthenticationRequest;
 import com.ujobs.WebServices.response.AuthenticationResponse;
 
 import jakarta.servlet.http.HttpServletRequest;

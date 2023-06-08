@@ -27,6 +27,7 @@ import com.ujobs.WebServices.repository.CareerRepository;
 import com.ujobs.WebServices.repository.CollegeRepository;
 import com.ujobs.WebServices.repository.StudentRepository;
 import com.ujobs.WebServices.repository.TokenRepository;
+import com.ujobs.WebServices.requests.AuthenticationRequest;
 import com.ujobs.WebServices.response.AuthenticationResponse;
 import com.ujobs.WebServices.service.AuthentificationService;
 import com.ujobs.WebServices.service.JwtService;
