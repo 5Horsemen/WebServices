@@ -2,6 +2,8 @@ package com.ujobs.WebServices.dto;
 
 import java.time.LocalDateTime;
 
+import com.ujobs.WebServices.model.MessageStatus;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,12 +13,14 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class MessageDto {
+public class PrivateMessageDto {
+
     private Long id;
-    private Long chatId;
-    private Long senderId;
-    private String senderName;
-    private String senderLastName;
     private String content;
-    private LocalDateTime timestamp;
+    private LocalDateTime sentDateTime;
+    private UserDto sender;
+    private UserDto recipient;
+    private MessageStatus status;
+    private Long chatId;
+
 }

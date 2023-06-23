@@ -95,4 +95,13 @@ public class JwtService {
         extraClaims.put("userId", userId);
         return buildToken(extraClaims, userDetails, jwtExpiration);
     }
+
+    public boolean validateToken(String token) {
+        try {
+            Jwts.parserBuilder().setSigningKey(getSignInKey()).build().parseClaimsJws(token);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
 }

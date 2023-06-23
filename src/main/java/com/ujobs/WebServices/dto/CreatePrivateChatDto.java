@@ -1,4 +1,4 @@
-package com.ujobs.WebServices.requests;
+package com.ujobs.WebServices.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class CreateMessageRequest {
-    private Long senderId;
-    private String content;
+public class CreatePrivateChatDto {
+    private Long user1Id;
+    private Long user2Id;
 }
