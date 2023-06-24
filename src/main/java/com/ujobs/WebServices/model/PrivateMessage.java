@@ -3,6 +3,8 @@ package com.ujobs.WebServices.model;
 import java.time.LocalDateTime;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -15,26 +17,34 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
 @Entity
 @Builder
-public class Message {
+@NoArgsConstructor
+@AllArgsConstructor
+public class PrivateMessage {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "chat_id")
-    private Chat chat;
+    @Lob
+    private String content;
+
+    private LocalDateTime sentDateTime;
 
     @ManyToOne
     @JoinColumn(name = "sender_id")
     private User sender;
 
-    @Lob
-    private String content;
+    @ManyToOne
+    @JoinColumn(name = "recipient_id")
+    private User recipient;
 
-    private LocalDateTime timestamp;
+    @ManyToOne
+    @JoinColumn(name = "chat_id")
+    private PrivateChat chat;
+
+    @Enumerated(EnumType.STRING)
+    private MessageStatus status;
+
 }
