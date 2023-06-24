@@ -1,5 +1,8 @@
 package com.ujobs.WebServices.service.impl;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -42,5 +45,11 @@ public class UserServiceImpl implements UserService {
         user.setProfileImage(imageData);
         userRepository.save(user);
         return modelMapper.map(user, UserDto.class);
+    }
+
+    @Transactional(readOnly = true)
+    public List<UserDto> searchUsers(String term) {
+        List<User> users = userRepository.searchUsers(term);
+        return users.stream().map(user -> modelMapper.map(user, UserDto.class)).collect(Collectors.toList());
     }
 }

@@ -2,6 +2,7 @@ package com.ujobs.WebServices.controller;
 
 import java.io.IOException;
 import java.util.Base64;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -64,6 +65,14 @@ public class UserController {
         } catch (IOException e) {
             throw new RuntimeException("Error al cargar la imagen");
         }
+    }
+
+    // URL: http://localhost:8080/api/v1/user/search
+    // Method: GET
+    @GetMapping("/search")
+    public ResponseEntity<List<UserDto>> searchUsers(@RequestParam(value = "term") String term) {
+        List<UserDto> users = userService.searchUsers(term);
+        return ResponseEntity.ok(users);
     }
 
 }
