@@ -42,6 +42,12 @@ public class PostServiceImp implements PostService {
     }
 
     @Override
+    public PostDto getPostByType(Long id, String type) {
+        Optional<Post> post = postRepository.findAllByUserIdAndType(id, type).stream().findFirst();
+        return post.map(value -> modelMapper.map(value, PostDto.class)).orElse(null);
+    }
+
+    @Override
     public PostDto updatePost(PostDto postDTO) {
         Post post = modelMapper.map(postDTO, Post.class);
         post.setUser(userRepository.findById(postDTO.getUserId()).orElse(null));

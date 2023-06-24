@@ -8,4 +8,5 @@ import com.ujobs.WebServices.model.Post;
 
 public interface PostRepository extends JpaRepository<Post, Long> {
     List<Post> findAllByUserId(Long userId);
+    List<Post> findAllByUserIdAndType(Long userId, String type);
 }

@@ -28,6 +28,12 @@ public class PostController {
         return new ResponseEntity<>(postService.getPost(id), HttpStatus.OK);
     }
 
+    // URL: http://localhost:8080/api/v1/posts/1/type
+    @GetMapping("/{id}/{type}")
+    public ResponseEntity<PostDto> getPostByType(@PathVariable Long id, @PathVariable String type) {
+        return new ResponseEntity<>(postService.getPostByType(id, type), HttpStatus.OK);
+    }
+
     // URL: http://localhost:8080/api/v1/posts/1
     @PutMapping
     public ResponseEntity<PostDto> updatePost(@RequestBody PostDto postDto) {

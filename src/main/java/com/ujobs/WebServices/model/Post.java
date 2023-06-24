@@ -31,6 +31,12 @@ public class Post {
         @GeneratedValue(strategy = GenerationType.AUTO)
         private Long id;
 
+        @Column
+        private String type;
+
+        @Column(length = 50)
+        private String title;
+
         @Column(length = 5000)
         private String content;
 
