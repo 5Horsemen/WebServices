@@ -10,6 +10,8 @@ public interface PostService {
 
     public abstract PostDto getPost(Long id);
 
+    public abstract List<PostDto> getAllPosts();
+
     public abstract PostDto updatePost(PostDto post);
 
     public abstract void deletePost(Long id);

@@ -13,11 +13,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ujobs.WebServices.exception.ValidationException;
+import com.ujobs.WebServices.model.Employer;
 import com.ujobs.WebServices.model.Student;
 import com.ujobs.WebServices.requests.AuthenticationRequest;
+import com.ujobs.WebServices.requests.EmployerRegistrationRequest;
 import com.ujobs.WebServices.requests.StudentRegistrationRequest;
 import com.ujobs.WebServices.response.AuthenticationResponse;
 import com.ujobs.WebServices.service.AuthentificationService;
+import com.ujobs.WebServices.service.EmployerService;
 import com.ujobs.WebServices.service.StudentService;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -33,6 +36,9 @@ public class AuthenticationController {
 
     @Autowired
     private AuthentificationService authentificationService;
+
+    @Autowired
+    private EmployerService employerService;
 
     // URL: http://localhost:8080/api/v1/account/register/student
     // Method: POST
@@ -58,8 +64,28 @@ public class AuthenticationController {
         return new ResponseEntity<AuthenticationResponse>(registeredStudent, HttpStatus.CREATED);
     }
 
+    // URL: http://localhost:8080/api/v1/account/register/employer
+    // Method: POST
+
+    @Transactional
+    @PostMapping("/register/employer")
+    public ResponseEntity<AuthenticationResponse> registerEmployer(@RequestBody EmployerRegistrationRequest request) {
+        validateEmployer(request.getEmployer());
+        AuthenticationResponse registeredEmployer = authentificationService.registerEmployer(request.getEmployer());
+        return new ResponseEntity<AuthenticationResponse>(registeredEmployer, HttpStatus.CREATED);
+    }
+
     // URL: http://localhost:8080/api/v1/account/login
     // Method: POST
+        // "name": "Joshep",
+        // "lastName": "Ramirez",
+        // "email": "ramirez.doe@example.com",
+        // "password": "mySecurePassword",
+        // "dni": "12345678",
+        // "ruc": "12345678912"
+        // "companyName": 1,
+        // "jobPosition": 1,
+        // }
     @Transactional
     @PostMapping("/login")
     public ResponseEntity<AuthenticationResponse> login(@RequestBody AuthenticationRequest request) {
@@ -106,4 +132,41 @@ public class AuthenticationController {
         }
 
     }
+
+    private void validateEmployer(Employer employer) {
+        if (employer.getName() == null || employer.getName().isEmpty()) {
+            throw new ValidationException("El nombre del empleador no puede ser vacio");
+        }
+        if (employer.getLastName() == null || employer.getLastName().isEmpty()) {
+            throw new ValidationException("El apellido del empleador no puede ser vacio");
+        }
+        if (employer.getDni() == null || employer.getDni().isEmpty()) {
+            throw new ValidationException("El dni del empleador no puede ser vacio");
+        } else if (employer.getDni().length() != 8) {
+            throw new ValidationException("El dni debe tener 8 caracteres");
+        }
+        if (employer.getPassword() == null || employer.getPassword().isEmpty()) {
+            throw new ValidationException("La contraseña del empleador no puede ser vacio");
+        } else if (employer.getPassword().length() < 8) {
+            throw new ValidationException("La contraseña del empleador debe tener al menos 8 caracteres");
+        }
+        if (employer.getCompanyName() == null || employer.getCompanyName().isEmpty()) {
+            throw new ValidationException("La empresa del empleador no puede ser vacio");
+        }
+        if (employer.getRuc() == null || employer.getRuc().isEmpty()) {
+            throw new ValidationException("El ruc del empleador no puede ser vacio");
+        } else if (employer.getRuc().length() != 11) {
+            throw new ValidationException("El ruc debe tener 11 caracteres");
+        }
+        if (employer.getJobPosition() == null || employer.getJobPosition().isEmpty()) {
+            throw new ValidationException("El puesto de trabajo del empleador no puede ser vacio");
+        }
+        if (employerService.getEmployerByEmail(employer.getEmail()) != null) {
+            throw new ValidationException("El email del empleador ya está en uso");
+        }
+        if(employerService.getEmployerByDni(employer.getDni()) != null){
+            throw new ValidationException("El DNI del empleador ya está en uso");
+        }
+    }
+    
 }

@@ -17,6 +17,8 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Inheritance;
+import jakarta.persistence.InheritanceType;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
@@ -31,6 +33,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Builder
 @Table(name = "users")
+@Inheritance(strategy = InheritanceType.JOINED)
 public class User implements UserDetails {
 
   @Id
@@ -43,9 +46,8 @@ public class User implements UserDetails {
   private String password;
   @Column(name = "dni", length = 8, nullable = false, unique = true)
   private String dni;
-  @Column(length = 1000)
+  @Column(length = 1048576)
   private String profileImage;
-
   @Enumerated(EnumType.STRING)
   private Role role;
 

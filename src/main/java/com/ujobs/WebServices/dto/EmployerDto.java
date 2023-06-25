@@ -1,7 +1,5 @@
 package com.ujobs.WebServices.dto;
 
-import java.util.List;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,10 +9,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class CommentDto {
-    private Long id;
-    private String content;
+public class EmployerDto {
     private UserDto user;
-    private Long postId;
-    private List<Long> likes;
+    private String companyName;
+    private String ruc;
+    private String jobPosition;
 }

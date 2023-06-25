@@ -19,14 +19,18 @@ import java.util.ArrayList;
 import com.ujobs.WebServices.exception.ResourceNotFoundException;
 import com.ujobs.WebServices.model.Career;
 import com.ujobs.WebServices.model.College;
+import com.ujobs.WebServices.model.Employer;
 import com.ujobs.WebServices.model.Role;
 import com.ujobs.WebServices.model.Student;
 import com.ujobs.WebServices.model.Token;
 import com.ujobs.WebServices.model.TokenType;
+import com.ujobs.WebServices.model.User;
 import com.ujobs.WebServices.repository.CareerRepository;
 import com.ujobs.WebServices.repository.CollegeRepository;
+import com.ujobs.WebServices.repository.EmployerRepository;
 import com.ujobs.WebServices.repository.StudentRepository;
 import com.ujobs.WebServices.repository.TokenRepository;
+import com.ujobs.WebServices.repository.UserRepository;
 import com.ujobs.WebServices.requests.AuthenticationRequest;
 import com.ujobs.WebServices.response.AuthenticationResponse;
 import com.ujobs.WebServices.service.AuthentificationService;
@@ -35,6 +39,9 @@ import com.ujobs.WebServices.service.JwtService;
 @Service
 @RequiredArgsConstructor
 public class AuthentificationSerivceImpl implements AuthentificationService {
+
+    @Autowired
+    private EmployerRepository employerRepository;
 
     @Autowired
     private StudentRepository studentRepository;
@@ -47,6 +54,9 @@ public class AuthentificationSerivceImpl implements AuthentificationService {
 
     @Autowired
     private TokenRepository tokenRepository;
+
+    @Autowired
+    private UserRepository userRepository;
 
     private final JwtService jwtService;
     private final PasswordEncoder passwordEncoder;
@@ -74,25 +84,41 @@ public class AuthentificationSerivceImpl implements AuthentificationService {
                 .build();
     }
 
-    public AuthenticationResponse login(AuthenticationRequest request) {
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        request.getEmail(),
-                        request.getPassword()));
-        var student = studentRepository.findByEmail(request.getEmail());
-        var jwtToken = jwtService.generateToken(student.getId(), student);
-        var refreshToken = jwtService.generateRefreshToken(student);
-        revokeAllUserTokens(student);
-        saveUserToken(student, jwtToken);
+    @Override
+    public AuthenticationResponse registerEmployer(Employer employer) {
+
+        employer.setRole(Role.EMPLOYER);
+        employer.setPassword(passwordEncoder.encode(employer.getPassword()));
+        var savedEmployer = employerRepository.save(employer);
+
+        var jwtToken = jwtService.generateToken(savedEmployer.getId(), savedEmployer);
+        var refreshToken = jwtService.generateRefreshToken(savedEmployer);
+        saveEmployerToken(savedEmployer, jwtToken);
         return AuthenticationResponse.builder()
                 .accessToken(jwtToken)
                 .refreshToken(refreshToken)
                 .build();
     }
 
-    private void saveUserToken(Student student, String jwtToken) {
+    public AuthenticationResponse login(AuthenticationRequest request) {
+        authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        request.getEmail(),
+                        request.getPassword()));
+        var user = userRepository.findByEmail(request.getEmail());
+        var jwtToken = jwtService.generateToken(user.getId(), user);
+        var refreshToken = jwtService.generateRefreshToken(user);
+        revokeAllUserTokens(user);
+        saveUserToken(user, jwtToken);
+        return AuthenticationResponse.builder()
+                .accessToken(jwtToken)
+                .refreshToken(refreshToken)
+                .build();
+    }
+
+    private void saveUserToken(User user, String jwtToken) {
         var token = Token.builder()
-                .user(student)
+                .user(user)
                 .token(jwtToken)
                 .tokenType(TokenType.BEARER)
                 .expired(false)
@@ -101,7 +127,18 @@ public class AuthentificationSerivceImpl implements AuthentificationService {
         tokenRepository.save(token);
     }
 
-    private void revokeAllUserTokens(Student user) {
+    private void saveEmployerToken(Employer employer, String jwtToken) {
+        var token = Token.builder()
+                .user(employer)
+                .token(jwtToken)
+                .tokenType(TokenType.BEARER)
+                .expired(false)
+                .revoked(false)
+                .build();
+        tokenRepository.save(token);
+    }
+
+    private void revokeAllUserTokens(User user) {
         var validUserTokens = tokenRepository.findAllValidTokenByUser(user.getId());
         if (validUserTokens.isEmpty())
             return;

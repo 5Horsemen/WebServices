@@ -1,5 +1,6 @@
 package com.ujobs.WebServices.model;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 
@@ -16,6 +17,7 @@ import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.PrePersist;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -35,7 +37,7 @@ public class Post {
         private String content;
 
         @Lob
-        @Column
+        @Column(length = 1048576)
         private byte[] image;
 
         @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
@@ -52,5 +54,12 @@ public class Post {
         @ManyToMany
         @JoinTable(name = "post_shares", joinColumns = @JoinColumn(name = "post_id"), inverseJoinColumns = @JoinColumn(name = "user_id"))
         private Set<User> shares;
+
+        private LocalDateTime createdDate;
+
+        @PrePersist
+        protected void onCreate() {
+                createdDate = LocalDateTime.now();
+        }
 
 }
