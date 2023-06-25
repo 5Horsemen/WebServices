@@ -46,9 +46,8 @@ public class User implements UserDetails {
   private String password;
   @Column(name = "dni", length = 8, nullable = false, unique = true)
   private String dni;
-  @Column(length = 1000)
+  @Column(length = 1048576)
   private String profileImage;
-
   @Enumerated(EnumType.STRING)
   private Role role;
 

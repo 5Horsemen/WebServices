@@ -56,7 +56,7 @@ public class CommentController {
         if (commentDto.getContent().length() > 5000) {
             throw new ValidationException("El contenido del comentario no puede tener más de 5000 caracteres");
         }
-        if (commentDto.getUserId() == null) {
+        if (commentDto.getUser() == null) {
             throw new ValidationException("El usuario del comentario no puede ser nulo");
         }
         if (commentDto.getPostId() == null) {

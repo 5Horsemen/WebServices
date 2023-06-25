@@ -26,7 +26,8 @@ public class SecurityConfiguration {
                                 .authorizeHttpRequests(authorize -> authorize
                                                 .requestMatchers("/api/v1/account/login", "/api/v1/account/register/**",
                                                                 "/api/v1/career",
-                                                                "/api/v1/college", "/socket.io/**", "/ws/**")
+                                                                "/api/v1/college", "/socket.io/**", "/ws/**",
+                                                                "/images/**")
                                                 .permitAll()
                                                 .requestMatchers("/api/v1/**", "/**")
                                                 .authenticated()

@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Entity
 public class Student extends User {
-  @Column(name = "university_email",nullable = false, unique = true)
+  @Column(name = "university_email", nullable = false, unique = true)
   private String universityEmail;
 
   @ManyToOne

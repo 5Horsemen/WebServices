@@ -9,8 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.ujobs.WebServices.dto.PostDto;
+import com.ujobs.WebServices.dto.UserDto;
 import com.ujobs.WebServices.model.Post;
-import com.ujobs.WebServices.model.User;
 import com.ujobs.WebServices.repository.PostRepository;
 import com.ujobs.WebServices.repository.UserRepository;
 import com.ujobs.WebServices.service.PostService;
@@ -80,15 +80,20 @@ public class PostServiceImp implements PostService {
         return post.map(this::convertToDto).orElse(null);
     }
 
-    private PostDto convertToDto(Post post) {
-        PostDto postDto = new PostDto();
-        postDto.setId(post.getId());
-        postDto.setContent(post.getContent());
-        postDto.setUserId(post.getUser().getId());
-        postDto.setImage(post.getImage());
+    public List<PostDto> getAllPosts() {
+        List<Post> posts = postRepository.findAll();
+        return posts.stream()
+                .map(post -> modelMapper.map(post, PostDto.class))
+                .collect(Collectors.toList());
+    }
 
-        postDto.setLikes(post.getLikes().stream().map(User::getId).collect(Collectors.toList()));
-        postDto.setShares(post.getShares().stream().map(User::getId).collect(Collectors.toList()));
+    private PostDto convertToDto(Post post) {
+        PostDto postDto = modelMapper.map(post, PostDto.class);
+
+        postDto.setLikes(post.getLikes().stream().map(user -> modelMapper.map(user, UserDto.class))
+                .collect(Collectors.toList()));
+        postDto.setShares(post.getShares().stream().map(user -> modelMapper.map(user, UserDto.class))
+                .collect(Collectors.toList()));
 
         return postDto;
     }

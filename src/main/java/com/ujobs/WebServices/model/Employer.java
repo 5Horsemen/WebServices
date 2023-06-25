@@ -20,5 +20,3 @@ public class Employer extends User {
   @Column(name = "job_position", nullable = false)
   private String jobPosition;
 }
-
-

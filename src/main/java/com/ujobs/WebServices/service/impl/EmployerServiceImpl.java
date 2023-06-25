@@ -21,39 +21,39 @@ public class EmployerServiceImpl implements EmployerService {
     private EmployerRepository employerRepository;
 
     @Override
-    public EmployerDto getEmployerById(Long id){
+    public EmployerDto getEmployerById(Long id) {
         Employer employer = employerRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("No se encontró el empleador con el id: " + id));
         return mapToDto(employer);
     }
 
     @Override
-    public Employer getEmployerByDni(String dni){
+    public Employer getEmployerByDni(String dni) {
         return employerRepository.findByDni(dni);
     }
 
     @Override
-    public Employer getEmployerByEmail(String email){
+    public Employer getEmployerByEmail(String email) {
         return employerRepository.findByEmail(email);
     }
 
     @Override
-    public List<Employer> getEmployersByName(String name){
+    public List<Employer> getEmployersByName(String name) {
         return employerRepository.findByName(name);
     }
 
     @Override
-    public List<Employer> getEmployersByLastName(String lastName){
+    public List<Employer> getEmployersByLastName(String lastName) {
         return employerRepository.findByLastName(lastName);
     }
 
     @Override
-    public List<Employer> getEmployersByCompanyName(String companyName){
+    public List<Employer> getEmployersByCompanyName(String companyName) {
         return employerRepository.findByCompanyName(companyName);
     }
 
     @Override
-    public Employer updateEmployer(Employer employer){
+    public Employer updateEmployer(Employer employer) {
         Optional<Employer> existingEmployer = employerRepository.findById(employer.getId());
         if (existingEmployer.isPresent()) {
             Employer employerToUpdate = existingEmployer.get();
@@ -72,12 +72,12 @@ public class EmployerServiceImpl implements EmployerService {
     }
 
     @Override
-    public void deleteEmployer(Employer employer){
+    public void deleteEmployer(Employer employer) {
         employerRepository.delete(employer);
     }
 
     @Override
-    public Employer changeEmployerPassword(Long employerId, String newPassword){
+    public Employer changeEmployerPassword(Long employerId, String newPassword) {
         Optional<Employer> existingEmployer = employerRepository.findById(employerId);
 
         if (existingEmployer.isPresent()) {
@@ -108,5 +108,5 @@ public class EmployerServiceImpl implements EmployerService {
         userDto.setRole(user.getRole());
         return userDto;
     }
-    
+
 }

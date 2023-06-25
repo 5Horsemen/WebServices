@@ -18,4 +18,6 @@ public class UserDto {
     private String email;
     private Role role;
     private String profileImage;
+    private UserAndEmployerDto employer;
+    private UserAndStudentDto student;
 }

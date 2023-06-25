@@ -1,6 +1,7 @@
 package com.ujobs.WebServices.service.impl;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
@@ -33,7 +34,7 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public CommentDto createComment(CommentDto commentDto) {
         Comment comment = modelMapper.map(commentDto, Comment.class);
-        comment.setUser(userRepository.findById(commentDto.getUserId()).orElse(null));
+        comment.setUser(userRepository.findById(commentDto.getUser().getId()).orElse(null));
         comment.setPost(postRepository.findById(commentDto.getPostId()).orElse(null));
         comment = commentRepository.save(comment);
         return modelMapper.map(comment, CommentDto.class);
@@ -51,16 +52,13 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public void deleteComment(Long commentId) {
-        Comment comment = commentRepository.findById(commentId).orElse(null);
-        if (comment != null) {
-            commentRepository.delete(comment);
-        }
+        commentRepository.deleteById(commentId);
     }
 
     @Override
     public CommentDto getCommentById(Long commentId) {
-        Comment comment = commentRepository.findById(commentId).orElse(null);
-        return comment != null ? modelMapper.map(comment, CommentDto.class) : null;
+        Optional<Comment> comment = commentRepository.findById(commentId);
+        return comment.map(value -> modelMapper.map(value, CommentDto.class)).orElse(null);
     }
 
     @Override
@@ -71,7 +69,7 @@ public class CommentServiceImpl implements CommentService {
             comment.getLikes().add(user);
             commentRepository.save(comment);
         }
-        return modelMapper.map(comment, CommentDto.class);
+        return comment != null ? modelMapper.map(comment, CommentDto.class) : null;
     }
 
     @Override
@@ -81,5 +79,4 @@ public class CommentServiceImpl implements CommentService {
                 .map(comment -> modelMapper.map(comment, CommentDto.class))
                 .collect(Collectors.toList());
     }
-
 }
