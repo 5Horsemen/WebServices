@@ -20,6 +20,7 @@ import com.ujobs.WebServices.requests.EmployerRegistrationRequest;
 import com.ujobs.WebServices.requests.StudentRegistrationRequest;
 import com.ujobs.WebServices.response.AuthenticationResponse;
 import com.ujobs.WebServices.service.AuthentificationService;
+import com.ujobs.WebServices.service.EmployerService;
 import com.ujobs.WebServices.service.StudentService;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -35,6 +36,9 @@ public class AuthenticationController {
 
     @Autowired
     private AuthentificationService authentificationService;
+
+    @Autowired
+    private EmployerService employerService;
 
     // URL: http://localhost:8080/api/v1/account/register/student
     // Method: POST
@@ -157,5 +161,12 @@ public class AuthenticationController {
         if (employer.getJobPosition() == null || employer.getJobPosition().isEmpty()) {
             throw new ValidationException("El puesto de trabajo del empleador no puede ser vacio");
         }
+        if (employerService.getEmployerByEmail(employer.getEmail()) != null) {
+            throw new ValidationException("El email del empleador ya está en uso");
+        }
+        if(employerService.getEmployerByDni(employer.getDni()) != null){
+            throw new ValidationException("El DNI del empleador ya está en uso");
+        }
     }
+    
 }

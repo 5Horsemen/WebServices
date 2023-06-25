@@ -1,8 +1,6 @@
 package com.ujobs.WebServices.service.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.ujobs.WebServices.model.*;
-import com.ujobs.WebServices.repository.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +17,20 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import com.ujobs.WebServices.exception.ResourceNotFoundException;
+import com.ujobs.WebServices.model.Career;
+import com.ujobs.WebServices.model.College;
+import com.ujobs.WebServices.model.Employer;
+import com.ujobs.WebServices.model.Role;
+import com.ujobs.WebServices.model.Student;
+import com.ujobs.WebServices.model.Token;
+import com.ujobs.WebServices.model.TokenType;
+import com.ujobs.WebServices.model.User;
+import com.ujobs.WebServices.repository.CareerRepository;
+import com.ujobs.WebServices.repository.CollegeRepository;
+import com.ujobs.WebServices.repository.EmployerRepository;
+import com.ujobs.WebServices.repository.StudentRepository;
+import com.ujobs.WebServices.repository.TokenRepository;
+import com.ujobs.WebServices.repository.UserRepository;
 import com.ujobs.WebServices.requests.AuthenticationRequest;
 import com.ujobs.WebServices.response.AuthenticationResponse;
 import com.ujobs.WebServices.service.AuthentificationService;
@@ -30,8 +42,7 @@ public class AuthentificationSerivceImpl implements AuthentificationService {
 
     @Autowired
     private EmployerRepository employerRepository;
-    @Autowired
-    private UserRepository userRepository;
+
     @Autowired
     private StudentRepository studentRepository;
 
@@ -43,6 +54,9 @@ public class AuthentificationSerivceImpl implements AuthentificationService {
 
     @Autowired
     private TokenRepository tokenRepository;
+
+    @Autowired
+    private UserRepository userRepository;
 
     private final JwtService jwtService;
     private final PasswordEncoder passwordEncoder;
