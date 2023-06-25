@@ -1,6 +1,8 @@
 package com.ujobs.WebServices.service.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ujobs.WebServices.model.*;
+import com.ujobs.WebServices.repository.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -17,18 +19,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import com.ujobs.WebServices.exception.ResourceNotFoundException;
-import com.ujobs.WebServices.model.Career;
-import com.ujobs.WebServices.model.College;
-import com.ujobs.WebServices.model.Employer;
-import com.ujobs.WebServices.model.Role;
-import com.ujobs.WebServices.model.Student;
-import com.ujobs.WebServices.model.Token;
-import com.ujobs.WebServices.model.TokenType;
-import com.ujobs.WebServices.repository.CareerRepository;
-import com.ujobs.WebServices.repository.CollegeRepository;
-import com.ujobs.WebServices.repository.EmployerRepository;
-import com.ujobs.WebServices.repository.StudentRepository;
-import com.ujobs.WebServices.repository.TokenRepository;
 import com.ujobs.WebServices.requests.AuthenticationRequest;
 import com.ujobs.WebServices.response.AuthenticationResponse;
 import com.ujobs.WebServices.service.AuthentificationService;
@@ -40,7 +30,8 @@ public class AuthentificationSerivceImpl implements AuthentificationService {
 
     @Autowired
     private EmployerRepository employerRepository;
-
+    @Autowired
+    private UserRepository userRepository;
     @Autowired
     private StudentRepository studentRepository;
 
@@ -100,20 +91,20 @@ public class AuthentificationSerivceImpl implements AuthentificationService {
                 new UsernamePasswordAuthenticationToken(
                         request.getEmail(),
                         request.getPassword()));
-        var student = studentRepository.findByEmail(request.getEmail());
-        var jwtToken = jwtService.generateToken(student.getId(), student);
-        var refreshToken = jwtService.generateRefreshToken(student);
-        revokeAllUserTokens(student);
-        saveUserToken(student, jwtToken);
+        var user = userRepository.findByEmail(request.getEmail());
+        var jwtToken = jwtService.generateToken(user.getId(), user);
+        var refreshToken = jwtService.generateRefreshToken(user);
+        revokeAllUserTokens(user);
+        saveUserToken(user, jwtToken);
         return AuthenticationResponse.builder()
                 .accessToken(jwtToken)
                 .refreshToken(refreshToken)
                 .build();
     }
 
-    private void saveUserToken(Student student, String jwtToken) {
+    private void saveUserToken(User user, String jwtToken) {
         var token = Token.builder()
-                .user(student)
+                .user(user)
                 .token(jwtToken)
                 .tokenType(TokenType.BEARER)
                 .expired(false)
@@ -133,7 +124,7 @@ public class AuthentificationSerivceImpl implements AuthentificationService {
         tokenRepository.save(token);
     }
 
-    private void revokeAllUserTokens(Student user) {
+    private void revokeAllUserTokens(User user) {
         var validUserTokens = tokenRepository.findAllValidTokenByUser(user.getId());
         if (validUserTokens.isEmpty())
             return;

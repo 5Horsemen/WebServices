@@ -60,6 +60,9 @@ public class AuthenticationController {
         return new ResponseEntity<AuthenticationResponse>(registeredStudent, HttpStatus.CREATED);
     }
 
+    // URL: http://localhost:8080/api/v1/account/register/employer
+    // Method: POST
+
     @Transactional
     @PostMapping("/register/employer")
     public ResponseEntity<AuthenticationResponse> registerEmployer(@RequestBody EmployerRegistrationRequest request) {
@@ -70,6 +73,15 @@ public class AuthenticationController {
 
     // URL: http://localhost:8080/api/v1/account/login
     // Method: POST
+        // "name": "Joshep",
+        // "lastName": "Ramirez",
+        // "email": "ramirez.doe@example.com",
+        // "password": "mySecurePassword",
+        // "dni": "12345678",
+        // "ruc": "12345678912"
+        // "companyName": 1,
+        // "jobPosition": 1,
+        // }
     @Transactional
     @PostMapping("/login")
     public ResponseEntity<AuthenticationResponse> login(@RequestBody AuthenticationRequest request) {
